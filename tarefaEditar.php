@@ -43,6 +43,8 @@
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $clientes = $stmt->fetchAll();
+
+    $prior = ['baixa', 'media', 'alta'];
 ?>
 
 <!DOCTYPE html>
@@ -75,17 +77,33 @@
             <option value="<?php echo $TUDOS['UsuarioID'];?>" > <?php echo $TUDOS['UsuarioNome'];?> </option>
         
             <?php foreach($clientes as $cliente): ?>
+                <?php if($cliente['id'] == $TUDOS['UsuarioID']){  ?>
+                    <?php $cliente['id'] = null; // poderia deixar sem nada que já adiantaria também ?>
+                <?php } else { ?>
                 <option value="<?=$cliente['id']?>"> <?=$cliente['nome']?> </option>
+                <?php } ?>
             <?php endforeach; ?>   
         
         </select> <br>
 
         <label for="prioridade">Prioridade: </label>
         <select name="prioridadeEditado" id="prioridade">
+            <!-- Traz o a Prioridade da tabela Tarefa -->
             <option value="<?php echo $TUDOS['TarefaPrior'];?>"> <?php echo $TUDOS['TarefaPrior'];?>  </option>
-            <option value="baixa"> Baixa </option>
-            <option value="media"> Media </option>
-            <option value="alta"> Alta </option>
+            
+            <!-- Se a Prioridade for e mesma do que da Tabela Tarefa então ele mostrar o restante das opções, sendo assim, evitando o valor duplicado -->
+            <?php if($TUDOS['TarefaPrior'] == $prior[0]){ ?> 
+                <option value="media"> Media </option>
+                <option value="alta"> Alta </option>    
+            <?php } ?>
+            <?php if($TUDOS['TarefaPrior'] == $prior[1]){ ?> 
+                <option value="baixa"> Baixa </option>
+                <option value="alta"> Alta </option>    
+            <?php } ?>
+            <?php if($TUDOS['TarefaPrior'] == $prior[2]){ ?> 
+                <option value="baixa"> Baixa </option>
+                <option value="media"> Media </option>    
+            <?php } ?>
         </select>
 
         <input type="hidden" name="tarefaID" value="<?php echo $EditarTarefaId;?>"> 
